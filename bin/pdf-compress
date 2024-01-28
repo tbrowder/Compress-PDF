@@ -1,0 +1,21 @@
+#!/usr/bin/env raku
+
+use Proc::Easier;
+
+if not @*ARGS {
+    print qq:to/HERE/;
+    Usage: {$*PROGRAM.basename} <pdf file> [...options]
+
+    Compresses a PDF file to 150 DPI for images.
+
+    The output file is named 'inputfile-xxxdpi.pdf' where 'xxx' is
+      the compression selection.
+
+    Options:
+        150 - Compress to 150 DPI for images [default]
+        300 - Compress to 300 DPI for images
+
+    HERE
+    exit;
+}
+
