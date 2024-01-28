@@ -8,16 +8,16 @@
   "depends": [
     "Proc::Easier"
   ],
-  "description": "blah blah blah",
+  "description": "Provides a PDF compression binary executable, 'pdf-compress'",
   "license": "Artistic-2.0",
-  "name": "App::PDF-Compressor",
+  "name": "App::PDF-Compress",
   "perl": "6.d",
   "provides": {
-    "App::PDF-Compressor": "lib/App/PDF-Compressor.rakumod"
+    "App::PDF-Compress": "lib/App/PDF-Compress.rakumod"
   },
   "resources": [
   ],
-  "source-url": "https://github.com/tbrowder/App-PDF-Compressor.git",
+  "source-url": "https://github.com/tbrowder/App-PDF-Compress.git",
   "tags": [
   ],
   "test-depends": [

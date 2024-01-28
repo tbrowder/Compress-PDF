@@ -1,20 +1,20 @@
-[![Actions Status](https://github.com/tbrowder/App-PDF-Compressor/actions/workflows/linux.yml/badge.svg)](https://github.com/tbrowder/App-PDF-Compressor/actions) [![Actions Status](https://github.com/tbrowder/App-PDF-Compressor/actions/workflows/macos.yml/badge.svg)](https://github.com/tbrowder/App-PDF-Compressor/actions) [![Actions Status](https://github.com/tbrowder/App-PDF-Compressor/actions/workflows/windows.yml/badge.svg)](https://github.com/tbrowder/App-PDF-Compressor/actions)
+[![Actions Status](https://github.com/tbrowder/App-PDF-Compress/actions/workflows/linux.yml/badge.svg)](https://github.com/tbrowder/App-PDF-Compress/actions) [![Actions Status](https://github.com/tbrowder/App-PDF-Compress/actions/workflows/macos.yml/badge.svg)](https://github.com/tbrowder/App-PDF-Compress/actions) [![Actions Status](https://github.com/tbrowder/App-PDF-Compress/actions/workflows/windows.yml/badge.svg)](https://github.com/tbrowder/App-PDF-Compress/actions)
 
 NAME
 ====
 
-**App::PDF-Compressor** - Provides a PDF compression binary executable, 'pdf-compressor'
+**App::PDF-Compress** - Provides a PDF compression binary executable, 'pdf-compress'
 
 SYNOPSIS
 ========
 
 ```raku
-use App::PDF-Compressor
+use App::PDF-Compress
 ```
 
 In your terminal window:
 
-    $ pdf-compressor foo.pdf
+    $ pdf-compress foo.pdf
     # OUTPUT
     Input file: foo.pdf
       Size: ?
@@ -24,7 +24,7 @@ In your terminal window:
 DESCRIPTION
 ===========
 
-**App::PDF-Compressor** requires a system utitlity program: 'ps2pdf'. On Debian systems it can be installed by executing `sudo aptitude install ps2pdf`.
+**App::PDF-Compress** requires a system utitlity program: 'ps2pdf'. On Debian systems it can be installed by executing `sudo aptitude install ps2pdf`.
 
 AUTHOR
 ======

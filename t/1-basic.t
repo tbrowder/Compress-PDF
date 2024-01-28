@@ -1,5 +1,5 @@
 use Test;
-use App::PDF-Compressor;
+use App::PDF-Compress;
 
 pass "replace me";
 

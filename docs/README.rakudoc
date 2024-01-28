@@ -2,18 +2,18 @@
 
 =head1 NAME
 
-B<App::PDF-Compressor> - Provides a PDF compression binary executable, 'pdf-compressor'
+B<App::PDF-Compress> - Provides a PDF compression binary executable, 'pdf-compress'
 
 =head1 SYNOPSIS
 
 =begin code :lang<raku>
-use App::PDF-Compressor
+use App::PDF-Compress
 =end code
 
 In your terminal window:
 
 =begin code
-$ pdf-compressor foo.pdf
+$ pdf-compress foo.pdf
 # OUTPUT
 Input file: foo.pdf
   Size: ?
@@ -23,9 +23,9 @@ Compressed output file: foo-150dpi.pdf
 
 =head1 DESCRIPTION
 
-B<App::PDF-Compressor> requires a system utitlity program:
-'ps2pdf'. On Debian systems it can be installed by executing C<sudo
-aptitude install ps2pdf>.
+B<App::PDF-Compress> requires a system utitlity program: 'ps2pdf'. On
+Debian systems it can be installed by executing C<sudo aptitude
+install ps2pdf>.
 
 =head1 AUTHOR
 
