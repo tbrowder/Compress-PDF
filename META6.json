@@ -6,8 +6,9 @@
   "build-depends": [
   ],
   "depends": [
+    "Proc::Easier"
   ],
-  "description": "blah blah blah",
+  "description": "Provides a PDF compression binary executable",
   "license": "Artistic-2.0",
   "name": "App::PDF-Compressor",
   "perl": "6.d",
