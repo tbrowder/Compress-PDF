@@ -1,0 +1,11 @@
+#!/bin/env raku
+
+use PDF::Combiner;
+
+if @*ARGS.elems {
+    run-cli @*ARGS;
+}
+else {
+    run-cli;
+}
+
