@@ -5,27 +5,25 @@ multi sub run-compress(@args) is export {
     my $ofil;
     my $dpi = 150; # default
     for @args {
+        when /:i dpi '=' (\d\d\d) / {
+            $dpi = ~$0;
+            unless $dpi eq '150' or $dpi eq '300' {
+                die "FATAL: dpi values must be 150 or 300, you entered '$dpi'";
+            }
+        }
         when not $ifil.defined {
             if $_.IO.r {
                 $ifil = $_;
             }
         }
-        when /^:i d[p|pi]? '=' (\d\d\d) / {
-            $dpi = ~$0;
-            unless $dpi eq '150' or $dpi eq '300' {
-                say "FATAL: dpi values must be 150 or 300, you entered '$dpi'";
-                exit;
-            }
-        }
         default {
-            say "FATAL: Unknown arg '$_'"; exit;
+            die "FATAL: Unknown arg '$_'";
         }
     }
     
     # we should have all input to proceed
     unless $ifil.defined {
-        say "FATAL: No input file was entered. Exiting.";
-        exit;
+        die "FATAL: No input file was entered. Exiting.";
     }
 
     $ofil = $ifil;
@@ -49,9 +47,16 @@ multi sub run-compress(@args) is export {
     elsif $dpi eq "300" {
         $arg = "-dPDFSETTINGS=/printer";
     }
-    run "ps2pdf", $arg, $ifil, $ofil;
-    my $isiz  = $ifil.IO.s;
+    my $proc = run "ps2pdf", $arg, $ifil, $ofil, :out, :err;
+    my $out  = $proc.out.slurp(:close).words.join(" ");
+    my $err  = $proc.err.slurp(:close).words.join(" ");
+
+
+    my $isiz = $ifil.IO.s;
+    $isiz = pretty-print $isiz;
+
     my $osiz = $ofil.IO.s;
+    $osiz = pretty-print $osiz;
 
     print qq:to/HERE/;
     Input file: $ifil
@@ -61,6 +66,40 @@ multi sub run-compress(@args) is export {
     HERE
     exit	
 
+}
+
+sub pretty-print($s) {
+    # given an input file size in bits, print its size
+    # to one decimal place as n.nK or n.nM
+    my $kb = 1024.0;
+    my $mb = 1000.0 * $kb;
+    my $gb = 1000.0 * $mb;
+    my $tb = 1000.0 * $gb;
+    my $eb = 1000.0 * $tb;
+     
+    my $res;
+    with $s {
+        when $_ < $mb {
+            $res = $s / $kb;
+            $res = sprintf '%.1fK', $res;
+        }
+        when $_ < $gb {
+            $res = $s / $mb;
+            $res = sprintf '%.1fM', $res;
+        }
+        when $_ < $tb {
+            $res = $s / $gb;
+            $res = sprintf '%.1fG', $res;
+        }
+        when $_ < $eb {
+            $res = $s / $tb;
+            $res = sprintf '%.1fT', $res;
+        }
+        default {
+            die "FATAL: Unable to handle file size of $s bits (> Exabyte)";
+        }
+    }
+    $res
 }
 
 multi sub run-compress() is export {
