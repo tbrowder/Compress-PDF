@@ -13,12 +13,14 @@
   "name": "Compress::PDF",
   "perl": "6.d",
   "provides": {
+    "Compress": "lib/Compress.rakumod",
     "Compress::PDF": "lib/Compress/PDF.rakumod"
   },
   "resources": [
   ],
   "source-url": "https://github.com/tbrowder/Compress-PDF.git",
   "tags": [
+    "compress pdf dpi squeeze"
   ],
   "test-depends": [
   ],

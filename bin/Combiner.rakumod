@@ -5,64 +5,24 @@ use PDF::Font::Loader;
 
 use PDF::Combiner::Subs;
 
+
+# 17 lines BELOW the =begin comment line
 =begin comment
-my enum Paper <Letter A4>;
-my $debug   = 0;
-my $left    = 1 * 72; # inches => PS points
-my $right   = 1 * 72; # inches => PS points
-my $top     = 1 * 72; # inches => PS points
-my $bottom  = 1 * 72; # inches => PS points
-my $margin  = 1 * 72; # inches => PS points
-my Paper $paper  = Letter;
-my $page-numbers = False;
-
-# defaults for US Letter paper
-my $height = 11.0 * 72;
-my $width  =  8.5 * 72;
-# for A4
-# $height =; # 11.7 in
-# $width = ; #  8.3 in
-=end comment
-
 multi sub run-cli() is export {
     print qq:to/HERE/;
-    Usage: {$*PROGRAM.basename} config=my-pdf-project.txt
+    Usage: {$*PROGRAM.basename} <pdf file> [..options...]
 
-    Args
-        config=X - where X is the name of a configuration file listing various
-                   options as well as a list of PDF documents to be combined,
-                   one name or option per line, comments and blank lines are
-                   ignored. See the 'example-project' directory for examples.
+    Without options, compresses the input PDF file to the
+      default 150 dpi.
 
-    Options
-        ofile=X  - where X is the desired output file name (which overrides
-                   the 'outfile' setting in the configuration file).
-        zip=X    - where X is the PDF compression level: '150' or '300' DPI.
-                   Output files will get an approriate name extension of 
-                   '.150dpi.pdf' or '.300dpi.pdf'.
+    The input file is not modified, and the output file is
+      named as the input file with the extension '.pdf'
+      replaced by '-nnndpi.pdf' where 'nnn' is the selected
+      value of '150' (the default' or '300'.
 
-    'config' file options when present in the file
-        =numbers   Bool [explicit 'true' or 'false' OR, with no value:
-                     True if present, False if not]
+    Options:
+        dpi=X - where X is the PDF compression level: '150' or '300' DPI.
 
-                   produces page numbers on each page
-                   except the cover which is number
-                   one but not shown; format: 'Page N of M'
-
-        =begin title # empty or no title bock: no cover page
-                   title line for the cover page
-                   # a retained blank line for the cover page
-                   another title line for the cover page
-        =end title
-        =two-sided Bool [explicit 'true' or 'false' OR, with no value:
-                     True if present, False if not]
-        =back      Bool [explicit 'true' or 'false' OR, with no value:
-                     True if present, False if not]
-        =outfile   file name of the new document
-        =paper     'Letter' or 'A4' [default: Letter]
-        =margins   size in PostScript points [default: 72 (one inch)]
-
-    Combines the input PDFs into one document
     HERE
     exit
 } # multi sub run-cli() is export {

@@ -3,7 +3,7 @@
 =head1 NAME
 
 B<Compress::PDF> - Provides PDF compression binary executables
-  Provides PDF compression binary executables",
+C<compress-pdf> and its alias C<pdf-compress>
 
 =head1 SYNOPSIS
 

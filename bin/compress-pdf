@@ -1,6 +1,6 @@
 #!/usr/bin/env raku
 
-use PDF::Combiner;
+use Compress;
 
 if @*ARGS.elems {
     run-compress @*ARGS;
@@ -9,5 +9,3 @@ else {
     run-compress;
 }
 
-ps2pdf -dPDFSETTINGS=/ebook jsakahara.pdf jsakahara-150dpi.pdf
-ps2pdf -dPDFSETTINGS=/printer jsakahara.pdf jsakahara-300dpi.pdf
