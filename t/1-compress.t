@@ -10,6 +10,9 @@ my @f = <
     FAKE.pdf
     calendar
     calendar.txt
+    t/data/FAKE.pdf
+    t/data/calendar
+    t/data/calendar.txt
 >;
 END { unlink $_ if $_.IO.e for @f; }
 
