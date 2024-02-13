@@ -1,15 +1,17 @@
 use Test;
 use Compress::PDF;
 
+# Required to use without mi6:
+%*ENV<RAKUDOLIB> = "lib";
 my @f = <
     calendar.pdf
     calendar-150dpi.pdf
     calendar-300dpi.pdf
+    FAKE.pdf
+    calendar
+    calendar.txt
 >;
-
-END {
-    unlink $_ if $_.IO.e for @f;
-}
+END { unlink $_ if $_.IO.e for @f; }
 
 plan 12;
 
@@ -17,7 +19,6 @@ my ($proc, $out, $err, $debug);
 
 $debug = 0;
 
-%*ENV<RAKUDO_LIB> = "./lib";
 my $test = 0;
 
 #===================================

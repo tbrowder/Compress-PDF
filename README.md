@@ -14,12 +14,12 @@ use Compress::PDF
 
 In your terminal window:
 
-    $ compress-pdf foo.pdf
+    $ compress-pdf calendar.pdf
     # OUTPUT
-    Input file: foo.pdf
-      Size: ?
-    Compressed output file: foo-150dpi.pdf
-      Size: ?
+    Input file: calendar.pdf
+      Size: 2.9M
+    Compressed output file: calendar-150dpi.pdf
+      Size: 247.7K
 
 DESCRIPTION
 ===========
@@ -33,6 +33,19 @@ Installing this module results in one primary and two aliased Raku PDF compressi
   * pdf-compress #= aliased to `compress-pdf`
 
 Executing either name without input arguments results in:
+
+    Usage: compress-pdf <pdf file> [..options...]
+
+    Without options, compresses the input PDF file to the
+      default 150 dpi.
+
+    The input file is not modified, and the output file is
+      named as the input file with the extension '.pdf'
+      replaced by '-NNNdpi.pdf' where 'NNN' is the selected
+      value of '150' (the default) or '300'.
+
+    Options:
+        dpi=X - where X is the PDF compression level: '150' or '300' DPI.
 
 AUTHOR
 ======

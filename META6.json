@@ -6,7 +6,7 @@
   "build-depends": [
   ],
   "depends": [
-    "Proc::Easier"
+    "File::Copy"
   ],
   "description": "Provides PDF compression binary executables",
   "license": "Artistic-2.0",

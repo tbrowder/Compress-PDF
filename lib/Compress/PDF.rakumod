@@ -4,39 +4,51 @@ multi sub run-compress(@args) is export {
     my $ifil;
     my $ofil;
     my $dpi = 150; # default
-    for @args {
-        when /:i dpi '=' (\d\d\d) / {
+
+    for @args -> $a {
+        if not $ifil.defined and $a.IO.f {
+            $ifil = $a;
+        }
+        elsif $a ~~ /:i [d|dp|dpi] '=' (\d\d\d) / {
             $dpi = ~$0;
             unless $dpi eq '150' or $dpi eq '300' {
                 die "FATAL: dpi values must be 150 or 300, you entered '$dpi'";
             }
         }
-        when not $ifil.defined {
-            if $_.IO.r {
-                $ifil = $_;
-            }
-        }
-        default {
-            die "FATAL: Unknown arg '$_'";
+        else {
+            die "FATAL: Unknown arg '$a'";
         }
     }
     
-    # we should have all input to proceed
+    # We should have all input to proceed
     unless $ifil.defined {
         die "FATAL: No input file was entered. Exiting.";
     }
 
-    $ofil = $ifil;
+    # Save the original file name for further testing
+    my $real-ifile = $ifil;
+
+    # The file may not be a PDF file
+    my $res = isa-pdf-file $ifil;
+    unless $res.so {
+        die "FATAL: Input file '$ifil' is NOT a PDF file.";
+    }
+
+    # It may have no suffix at all
+    if $ifil !~~ / '.' \S+ $/ {
+        # We add one for the output file
+        $ifil ~= '.pdf';
+    }
+    # or it may not have a .pdf suffix
+    elsif $ifil !~~ /:i '.' pdf $/ {
+        # We change it to .pdf
+        $ifil ~~ s/'.' pdf $/.pdf/;
+    }
+
+    # Ready to proceed
     $ofil = $ifil.IO.basename;
-    if $ofil !~~ /:i '.pdf'$/ {
-        $ofil ~= '.pdf';
-        # eliminate double dots
-        $ofil ~~ s:g/'..'/./;
-    }
-    else {
-        # lower-case the .pdf
-        $ofil ~~ s/:i pdf$/pdf/;
-    }
+    # eliminate any double dots
+    $ofil ~~ s:g/'..'/./;
 
     # insert the correct dpi info
     $ofil ~~ s/'.pdf'$/-{$dpi}dpi.pdf/;
@@ -48,9 +60,8 @@ multi sub run-compress(@args) is export {
         $arg = "-dPDFSETTINGS=/printer";
     }
     my $proc = run "ps2pdf", $arg, $ifil, $ofil, :out, :err;
-    my $out  = $proc.out.slurp(:close).lines.words.join(" ");
-    my $err  = $proc.err.slurp(:close).lines.words.join(" ");
-
+    my $out  = $proc.out.slurp(:close).lines.join(" ");
+    my $err  = $proc.err.slurp(:close).lines.join(" ");
 
     my $isiz = $ifil.IO.s;
     $isiz = pretty-print $isiz;
@@ -65,7 +76,33 @@ multi sub run-compress(@args) is export {
       Size: $osiz
     HERE
     exit	
+}
 
+sub isa-pdf-file($ifil, :$debug --> Bool) is export {
+    unless $ifil.IO.f {
+        die "FATAL: File '$ifil' not found.";
+    }
+    # Run the system 'file' command 
+    # Typical output with no options:
+    #   calendar-150dpi.pdf: PDF document, version 1.4
+    #
+    # Note the output starts with a repeat of the input file name:
+    #   t/data/FAKE.pdf: OS/2 REXX batch file, ASCII text
+    # so we suppress it with the '-b' (brief) option
+
+    my $proc = run "file", "-b", "--", $ifil, :out, :err;
+    my $out = $proc.out.slurp(:close).lines.join(" ");
+    note "DEBUG: out: $out" if $debug;
+
+    my $err = $proc.err.slurp(:close).lines.join(" ");
+    note "DEBUG: err: $err" if $debug;
+
+    if $out ~~ /:i pdf / {
+        return True
+    }
+    else {
+        return False
+    }
 }
 
 sub pretty-print($s) {
