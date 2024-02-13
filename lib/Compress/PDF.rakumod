@@ -48,8 +48,8 @@ multi sub run-compress(@args) is export {
         $arg = "-dPDFSETTINGS=/printer";
     }
     my $proc = run "ps2pdf", $arg, $ifil, $ofil, :out, :err;
-    my $out  = $proc.out.slurp(:close).words.join(" ");
-    my $err  = $proc.err.slurp(:close).words.join(" ");
+    my $out  = $proc.out.slurp(:close).lines.words.join(" ");
+    my $err  = $proc.err.slurp(:close).lines.words.join(" ");
 
 
     my $isiz = $ifil.IO.s;
