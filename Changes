@@ -1,6 +1,10 @@
 Revision history for Compress::PDF
 
 {{$NEXT}}
+    - Extract the actual compression code
+        to an exported subroutine suitable
+        for use by other modules:
+        'compress'
 
 0.0.1  2024-02-13T15:18:32-06:00
     - Initial version

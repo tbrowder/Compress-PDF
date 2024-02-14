@@ -1,7 +1,17 @@
 unit module Compress::PDF;
 
-sub compress($ifil, :$dpi = 150) is export {
+sub compress($infile, :$outfile, :$dpi = 150) is export {
     # Exportable sub
+    my $arg;
+    if $dpi == 150 {
+        $arg = "-dPDFSETTINGS=/ebook";
+    }
+    elsif $dpi == 300 {
+        $arg = "-dPDFSETTINGS=/printer";
+    }
+    my $proc = run "ps2pdf", $arg, $ifil, $ofil, :out, :err;
+    my $out  = $proc.out.slurp(:close).lines.join(" ");
+    my $err  = $proc.err.slurp(:close).lines.join(" ");
 }
 
 multi sub run-compress(@args) is export {
@@ -56,6 +66,8 @@ multi sub run-compress(@args) is export {
 
     # insert the correct dpi info
     $ofil ~~ s/'.pdf'$/-{$dpi}dpi.pdf/;
+
+    =begin comment
     my $arg;
     if $dpi eq "150" {
         $arg = "-dPDFSETTINGS=/ebook";
@@ -66,6 +78,7 @@ multi sub run-compress(@args) is export {
     my $proc = run "ps2pdf", $arg, $ifil, $ofil, :out, :err;
     my $out  = $proc.out.slurp(:close).lines.join(" ");
     my $err  = $proc.err.slurp(:close).lines.join(" ");
+    =end comment
 
     my $isiz = $ifil.IO.s;
     $isiz = pretty-print $isiz;
