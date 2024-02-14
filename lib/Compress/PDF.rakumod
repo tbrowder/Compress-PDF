@@ -1,5 +1,9 @@
 unit module Compress::PDF;
 
+sub compress($ifil, :$dpi = 150) is export {
+    # Exportable sub
+}
+
 multi sub run-compress(@args) is export {
     my $ifil;
     my $ofil;
