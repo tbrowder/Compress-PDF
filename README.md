@@ -26,17 +26,22 @@ DESCRIPTION
 
 **Compress::PDF** requires a system utitlity program: 'ps2pdf'. On Debian systems it can be installed by executing `sudo aptitude install ps2pdf`.
 
-Installing this module results in one primary and two aliased Raku PDF compression programs:
+Installing this module results in an exported subroutine as well as one primary and one aliased Raku PDF compression programs:
+
+  * sub compress($inpdf, :$outpdf, :$dpi = 150) is export {...}
 
   * compress-pdf
 
   * pdf-compress #= aliased to `compress-pdf`
 
-Executing either name without input arguments results in:
+Programs
+--------
+
+Executing either program name without input arguments results in:
 
     Usage: compress-pdf <pdf file> [..options...]
 
-    Without options, compresses the input PDF file to the
+    Without options, the program compresses the input PDF file to the
       default 150 dpi.
 
     The input file is not modified, and the output file is
@@ -45,7 +50,16 @@ Executing either name without input arguments results in:
       value of '150' (the default) or '300'.
 
     Options:
-        dpi=X - where X is the PDF compression level: '150' or '300' DPI.
+      dpi=X - where X is the PDF compression level: '150' or '300' DPI.
+
+Subroutine
+----------
+
+The subroutine has the following signature:
+
+    sub compress($inpdf, :$outpdf, :$dpi=150) is export {...}
+
+If the `:$outpdf` is not entered, the `$outpdf` is name using the same scheme as the programs.
 
 AUTHOR
 ======

@@ -1,7 +1,10 @@
 unit module Compress::PDF;
 
-sub compress($infile, :$outfile, :$dpi = 150) is export {
-    # Exportable sub
+sub compress($inpdf, :$outpdf, :$dpi = 150) is export {
+    # Test for valid PDF inputs
+
+    # Prepare names if the output file name was not provided
+
     my $arg;
     if $dpi == 150 {
         $arg = "-dPDFSETTINGS=/ebook";
@@ -9,7 +12,7 @@ sub compress($infile, :$outfile, :$dpi = 150) is export {
     elsif $dpi == 300 {
         $arg = "-dPDFSETTINGS=/printer";
     }
-    my $proc = run "ps2pdf", $arg, $ifil, $ofil, :out, :err;
+    my $proc = run "ps2pdf", $arg, $inpdf, $outpdf, :out, :err;
     my $out  = $proc.out.slurp(:close).lines.join(" ");
     my $err  = $proc.err.slurp(:close).lines.join(" ");
 }
