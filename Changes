@@ -1,10 +1,14 @@
 Revision history for Compress::PDF
 
 {{$NEXT}}
-    - Extract the actual compression code
-        to an exported subroutine suitable
-        for use by other modules:
-        'compress'
+    - Extracted the actual compression code
+        to an exported subroutine ('xompress')
+        suitable for use by other modules
+    - Do not modify the input file name at
+        all, but, if the output file name
+        is NOT specified, strip off any
+        suffix and replace it with
+        '-NNNdpi.pdf'.
 
 0.0.1  2024-02-13T15:18:32-06:00
     - Initial version

@@ -28,7 +28,7 @@ DESCRIPTION
 
 Installing this module results in an exported subroutine as well as one primary and one aliased Raku PDF compression programs:
 
-  * sub compress($inpdf, :$outpdf, :$dpi = 150) is export {...}
+  * sub compress($inpdf, :$outpdf, :$force, :$dpi = 150) is export {...}
 
   * compress-pdf
 
@@ -45,21 +45,25 @@ Executing either program name without input arguments results in:
       default 150 dpi.
 
     The input file is not modified, and the output file is
-      named as the input file with the extension '.pdf'
+      named as the input file with any extension or suffix
       replaced by '-NNNdpi.pdf' where 'NNN' is the selected
       value of '150' (the default) or '300'.
 
     Options:
-      dpi=X - where X is the PDF compression level: '150' or '300' DPI.
+      dpi=X    - where X is the PDF compression level: '150' or '300' DPI.
+      force    - allows overwriting an existing output file
+      outpdf=X - where X is the desired output name
+
+Note the the default output file will overwrite an existing file of the same name without warning.
 
 Subroutine
 ----------
 
 The subroutine has the following signature:
 
-    sub compress($inpdf, :$outpdf, :$dpi=150) is export {...}
+    sub compress($inpdf, :$outpdf, :$force, :$dpi=150) is export {...}
 
-If the `:$outpdf` is not entered, the `$outpdf` is name using the same scheme as the programs.
+If the `:$outpdf` is not entered, the `$outpdf` is name using the same scheme as the programs. The `:$force` option allows overwriting an existing file.
 
 AUTHOR
 ======
