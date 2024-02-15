@@ -1,6 +1,8 @@
 Revision history for Compress::PDF
 
 {{$NEXT}}
+
+0.0.3  2024-02-15T17:47:00-06:00
     - Make the default behavior of sub compress to 
       quietly compress the input file as a tmp file 
       and write the compressed file to the input file
