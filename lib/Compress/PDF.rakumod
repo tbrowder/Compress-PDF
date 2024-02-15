@@ -1,8 +1,51 @@
 unit module Compress::PDF;
 
+sub compress($inpdf, :$outpdf is copy, :$dpi = 150, :$force --> Str) is export {
+    
+    # Test for valid PDF inputs
+    my $res = isa-pdf-file $inpdf;
+    unless $res.so {
+        die "FATAL: Input file '$inpdf' is NOT a PDF file.";
+    }
+    if $outpdf.defined {
+        # It's a desired name. Warn if overwriting,
+        if $outpdf.IO.e {
+            if not $force.defined {
+                die qq:to/HERE/;
+                FATAL: Output file '$outpdf' exists.
+                       Use the 'force' option to overwrite.
+                HERE
+            }
+            else {
+                # Ok to use the output file name
+            }
+        }
+    }
+    else {
+        # Prepare the output name if the output file name was not provided
+        $outpdf = $inpdf.IO.basename;
+        $outpdf ~~ s/'.' \S+ $//; # remove any extension
+        $outpdf ~= "\-{$dpi}dpi.pdf";
+    }
+
+    my $arg;
+    if $dpi == 150 {
+        $arg = "-dPDFSETTINGS=/ebook";
+    }
+    elsif $dpi == 300 {
+        $arg = "-dPDFSETTINGS=/printer";
+    }
+    my $proc = run "ps2pdf", $arg, $inpdf, $outpdf, :out, :err;
+    my $out  = $proc.out.slurp(:close).lines.join(" ");
+    my $err  = $proc.err.slurp(:close).lines.join(" ");
+    $outpdf
+}
+
 multi sub run-compress(@args) is export {
     my $ifil;
     my $ofil;
+    my $outpdf;
+    my $force;
     my $dpi = 150; # default
 
     for @args -> $a {
@@ -15,8 +58,14 @@ multi sub run-compress(@args) is export {
                 die "FATAL: dpi values must be 150 or 300, you entered '$dpi'";
             }
         }
+        elsif $a ~~ /:i force / {
+            $force = True;
+        }
+        elsif $a ~~ /:i out[p|pd|pdf]? '=' (\S+) / {
+            $outpdf = ~$0;
+        }
         else {
-            die "FATAL: Unknown arg '$a'";
+            die "FATAL: Unknown arg '$a' (not a valid file)";
         }
     }
     
@@ -25,44 +74,7 @@ multi sub run-compress(@args) is export {
         die "FATAL: No input file was entered. Exiting.";
     }
 
-    # Save the original file name for further testing
-    my $real-ifile = $ifil;
-
-    # The file may not be a PDF file
-    my $res = isa-pdf-file $ifil;
-    unless $res.so {
-        die "FATAL: Input file '$ifil' is NOT a PDF file.";
-    }
-
-    # It may have no suffix at all
-    if $ifil !~~ / '.' \S+ $/ {
-        # We add one for the output file
-        $ifil ~= '.pdf';
-    }
-    # or it may not have a .pdf suffix
-    elsif $ifil !~~ /:i '.' pdf $/ {
-        # We change it to .pdf
-        $ifil ~~ s/'.' pdf $/.pdf/;
-    }
-
-    # Ready to proceed
-    $ofil = $ifil.IO.basename;
-    # eliminate any double dots
-    $ofil ~~ s:g/'..'/./;
-
-    # insert the correct dpi info
-    $ofil ~~ s/'.pdf'$/-{$dpi}dpi.pdf/;
-    my $arg;
-    if $dpi eq "150" {
-        $arg = "-dPDFSETTINGS=/ebook";
-    }
-    elsif $dpi eq "300" {
-        $arg = "-dPDFSETTINGS=/printer";
-    }
-    my $proc = run "ps2pdf", $arg, $ifil, $ofil, :out, :err;
-    my $out  = $proc.out.slurp(:close).lines.join(" ");
-    my $err  = $proc.err.slurp(:close).lines.join(" ");
-
+    $ofil = compress $ifil, :$outpdf, :$force, :$dpi;
     my $isiz = $ifil.IO.s;
     $isiz = pretty-print $isiz;
 
@@ -148,12 +160,14 @@ multi sub run-compress() is export {
       default 150 dpi.
 
     The input file is not modified, and the output file is
-      named as the input file with the extension '.pdf'
+      named as the input file with any extension or suffix
       replaced by '-NNNdpi.pdf' where 'NNN' is the selected
       value of '150' (the default) or '300'.
 
     Options:
-        dpi=X - where X is the PDF compression level: '150' or '300' DPI.
+      dpi=X    - where X is the PDF compression level: '150' or '300' DPI
+      force    - allows overwriting an existing output file
+      outpdf=X - where X is the desired output name
 
     HERE
     exit
