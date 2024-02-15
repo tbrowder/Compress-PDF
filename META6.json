@@ -6,6 +6,7 @@
   "build-depends": [
   ],
   "depends": [
+    "File::Temp",
     "File::Copy"
   ],
   "description": "Provides PDF compression binary executables",

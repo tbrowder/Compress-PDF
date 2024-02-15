@@ -32,7 +32,8 @@ Installing this module results in an exported subroutine
 as well as one primary and one aliased
 Raku PDF compression programs:
 
-=item sub compress($inpdf, :$outpdf, :$force, :$dpi = 150) is export {...}
+=item sub compress($inpdf, :$quiet, :$dpi = 150,
+                  :$outpdf, :$force) is export {...}
 =item compress-pdf
 =item pdf-compress #= aliased to C<compress-pdf>
 
@@ -65,11 +66,18 @@ same name without warning.
 The subroutine has the following signature:
 
 =begin code
-sub compress($inpdf, :$outpdf, :$force, :$dpi=150) is export {...}
+sub compress($inpdf, :$quiet, :$dpi = 150,
+             :$outpdf, :$force) is export {...}
 =end code
 
+The C<:$quiet> option is designed for use in programs
+where the user's desired output file name is designed to be quietly
+and seamlessly compressed by default. 
+Other options provide more flexibilty and choices to offer the user
+if the C<$quiet> option is B<not> used.
+
 If the C<:$outpdf> is not entered, the C<$outpdf> is
-name using the same scheme as the programs.
+named using the same scheme as the programs.
 The C<:$force> option allows overwriting an existing file.
 
 =head1 AUTHOR

@@ -28,7 +28,7 @@ DESCRIPTION
 
 Installing this module results in an exported subroutine as well as one primary and one aliased Raku PDF compression programs:
 
-  * sub compress($inpdf, :$outpdf, :$force, :$dpi = 150) is export {...}
+  * sub compress($inpdf, :$quiet, :$dpi = 150, :$outpdf, :$force) is export {...}
 
   * compress-pdf
 
@@ -61,9 +61,12 @@ Subroutine
 
 The subroutine has the following signature:
 
-    sub compress($inpdf, :$outpdf, :$force, :$dpi=150) is export {...}
+    sub compress($inpdf, :$quiet, :$dpi = 150,
+                 :$outpdf, :$force) is export {...}
 
-If the `:$outpdf` is not entered, the `$outpdf` is name using the same scheme as the programs. The `:$force` option allows overwriting an existing file.
+The `:$quiet` option is designed for use in programs where the user's desired output file name is designed to be quietly and seamlessly compressed by default. Other options provide more flexibilty and choices to offer the user if the `$quiet` option is **not** used.
+
+If the `:$outpdf` is not entered, the `$outpdf` is named using the same scheme as the programs. The `:$force` option allows overwriting an existing file.
 
 AUTHOR
 ======
