@@ -45,7 +45,7 @@ dies-ok { compress $fX; }
 # with good args
 lives-ok { compress $f, :dpi(150); }
 lives-ok { compress $f, :dpi(300); }
-lives-ok { compress $f, :outpdf<calendar2>, :force }
+lives-ok { compress $f, :outpdf($f0), :force }
 
 # bad args
-dies-ok { compress $f, :outpdf<calendar2> }
+dies-ok { compress $f, :outpdf($f0) }
