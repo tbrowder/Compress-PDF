@@ -1,6 +1,17 @@
 unit module Compress::PDF;
 
-sub compress($inpdf, :$outpdf is copy, :$dpi = 150, :$force --> Str) is export {
+use File::Copy;
+use File::Temp;
+
+sub compress(
+    $inpdf is copy,
+    :$outpdf is copy, 
+    :$dpi = 150, 
+    :$force,
+    :$quiet,
+    :$debug, 
+    --> Str
+) is export {
     
     # Test for valid PDF inputs
     my $res = isa-pdf-file $inpdf;
@@ -20,6 +31,13 @@ sub compress($inpdf, :$outpdf is copy, :$dpi = 150, :$force --> Str) is export {
                 # Ok to use the output file name
             }
         }
+    }
+    elsif $quiet.defined {
+        # redefine input and output
+        $outpdf = $inpdf;
+        my $tmpdir = tempdir;
+        cp $inpdf, $tmpdir;
+        $inpdf = "$tmpdir/$inpdf";
     }
     else {
         # Prepare the output name if the output file name was not provided
