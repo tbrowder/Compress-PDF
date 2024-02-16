@@ -1,6 +1,8 @@
 Revision history for Compress::PDF
 
 {{$NEXT}}
+
+0.0.4  2024-02-15T20:14:56-06:00
     - Correct test t/5*t so no version controlled 
         files are modified during testing.
 
