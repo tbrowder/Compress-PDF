@@ -35,4 +35,4 @@ my ($proc, $out, $err);
 plan 1;
 
 # with good args
-lives-ok { compress $f, :quiet; }
+lives-ok { compress $f0, :quiet; }
