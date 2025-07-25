@@ -16,7 +16,6 @@ my @f = <
     t/data/calendar
     t/data/calendar.txt
 >;
-END { unlink $_ if $_.IO.e for @f; }
 
 # Prepare three more temporary input files
 my $f  = "t/data/calendar.pdf";
@@ -27,7 +26,7 @@ my $fX = "t/data/FAKE.pdf";
 cp $f, $f0;
 cp $f, $fx;
 
-plan 12;
+#plan 12;
 
 my ($proc, $out, $err);
 
@@ -39,17 +38,23 @@ my $test = 0;
 # err: 
 #===================================
 ++$test; say "Test $test" if $debug;
+
 $proc = run "bin/compress-pdf", "t/data/calendar.pdf", :out, :err;
 $out = $proc.out.slurp(:close).lines.head // "";
+# is $out a legit PDF file?
+
 $err = $proc.err.slurp(:close).lines.head // "";
-if $debug {
-    say "out: ", $out;
-    say "err: ", $err;
+if 0 and $debug {
+    say "out: '$out'";
+    say "err: '$err'";
 }
 else {
     like $out, /:i input \h* file/;
     like $err, /:i \h*  /;
 }
+
+#done-testing;
+#=finish
 
 #===================================
 # Test 2
@@ -61,8 +66,8 @@ $proc = run "bin/compress-pdf", "dpi=150", "t/data/calendar.pdf", :out, :err;
 $out = $proc.out.slurp(:close).lines.head // "";
 $err = $proc.err.slurp(:close).lines.head // "";
 if $debug {
-    say "out: ", $out;
-    say "err: ", $err;
+    say "out: '$out'";
+    say "err: '$err'";
 }
 else {
     like $out, /:i input \h* file/;
@@ -79,8 +84,8 @@ $proc = run "bin/compress-pdf", "dpi=300", "t/data/calendar.pdf", :out, :err;
 $out = $proc.out.slurp(:close).lines.head // "";
 $err = $proc.err.slurp(:close).lines.head // "";
 if $debug {
-    say "out: ", $out;
-    say "err: ", $err;
+    say "out: '$out'";
+    say "err: '$err'";
 }
 else {
     like $out, /:i input \h* file/;
@@ -97,8 +102,8 @@ $proc = run "bin/pdf-compress", "dpi=300", "t/data/calendar.pdf", :out, :err;
 $out = $proc.out.slurp(:close).lines.head // "";
 $err = $proc.err.slurp(:close).lines.head // "";
 if $debug {
-    say "out: ", $out;
-    say "err: ", $err;
+    say "out: '$out'";
+    say "err: '$err'";
 }
 else {
     like $out, /:i input \h* file/;
@@ -116,8 +121,8 @@ $proc = run "bin/pdf-compress", "dpi=200", "t/data/calendar.pdf", :out, :err;
 $out = $proc.out.slurp(:close).lines.head // "";
 $err = $proc.err.slurp(:close).lines.head // "";
 if $debug {
-    say "out: ", $out;
-    say "err: ", $err;
+    say "out: '$out'";
+    say "err: '$err'";
 }
 else {
     like $out, /:i \h* /;
@@ -134,8 +139,8 @@ $proc = run "bin/pdf-compress", "t/data/calendarFAKE.pdf", :out, :err;
 $out = $proc.out.slurp(:close).lines.head // "";
 $err = $proc.err.slurp(:close).lines.head // "";
 if $debug {
-    say "out: ", $out;
-    say "err: ", $err;
+    say "out: '$out'";
+    say "err: '$err'";
 }
 else {
     like $out, /:i \h* /;
