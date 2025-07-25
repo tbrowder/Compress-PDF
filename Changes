@@ -10,6 +10,7 @@ Revision history for Compress::PDF
         150 dpi as 'ebook' and 300 dpi as 'print'
     - Updated README with new or changed features
     - Added new tests
+    - Ignore local pdf files for App::Mi6
 
 0.0.4  2024-02-15T20:14:56-06:00
     - Correct test t/5*t so no version controlled 
