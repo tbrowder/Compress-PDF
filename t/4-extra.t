@@ -16,7 +16,6 @@ my @f = <
     t/data/calendar
     t/data/calendar.txt
 >;
-END { unlink $_ if $_.IO.e for @f; }
 
 # Prepare three more temporary input files
 my $f  = "t/data/calendar.pdf";
@@ -43,8 +42,8 @@ $proc = run "bin/compress-pdf", "t/data/calendar.txt", :out, :err;
 $out = $proc.out.slurp(:close).lines.head // "";
 $err = $proc.err.slurp(:close).lines.head // "";
 if $debug {
-    say "out: ", $out;
-    say "err: ", $err;
+    say "out: '$out'";
+    say "err: '$err'";
 }
 else {
     like $out, /:i input \h* file/;
@@ -61,8 +60,8 @@ $proc = run "bin/compress-pdf", "dpi=150", "t/data/calendar", :out, :err;
 $out = $proc.out.slurp(:close).lines.head // "";
 $err = $proc.err.slurp(:close).lines.head // "";
 if $debug {
-    say "out: ", $out;
-    say "err: ", $err;
+    say "out: '$out'";
+    say "err: '$err'";
 }
 else {
     like $out, /:i input \h* file/;
@@ -79,8 +78,8 @@ $proc = run "bin/compress-pdf", "dpi=150", "t/data/FAKE.pdf", :out, :err;
 $out = $proc.out.slurp(:close).lines.head // "";
 $err = $proc.err.slurp(:close).lines.head // "";
 if $debug {
-    say "out: ", $out;
-    say "err: ", $err;
+    say "out: '$out'";;
+    say "err: '$err'";;
 }
 else {
     like $out, /:i \h* /;

@@ -2,6 +2,8 @@ use Test;
 use Compress::PDF;
 use File::Copy;
 
+# test env var COMPRESS_PDF_COMPRESS_OFF=1 
+# turns off exe 'compress'
 my $debug = 0;
 
 # Required to use without mi6:
@@ -26,7 +28,7 @@ my $fX = "t/data/FAKE.pdf";
 cp $f, $f0;
 cp $f, $fx;
 
-#plan 12;
+#  plan 12;
 
 my ($proc, $out, $err);
 
@@ -39,12 +41,13 @@ my $test = 0;
 #===================================
 ++$test; say "Test $test" if $debug;
 
-$proc = run "bin/compress-pdf", "t/data/calendar.pdf", :out, :err;
+# %*ENV<COMPRESS_PDF_COMPRESS_OFF> = 1;
+
+$proc = run "bin/compress", "t/data/calendar.pdf", :out, :err;
 $out = $proc.out.slurp(:close).lines.head // "";
 # is $out a legit PDF file?
-
 $err = $proc.err.slurp(:close).lines.head // "";
-if 0 and $debug {
+if 0 or $debug {
     say "out: '$out'";
     say "err: '$err'";
 }
@@ -53,8 +56,24 @@ else {
     like $err, /:i \h*  /;
 }
 
-#done-testing;
-#=finish
+# now check with the env var set
+%*ENV<COMPRESS_PDF_COMPRESS_OFF> = 1;
+
+$proc = run "bin/compress", "t/data/calendar.pdf", :out, :err;
+$out = $proc.out.slurp(:close).lines.head // "";
+# is $out a legit PDF file?
+$err = $proc.err.slurp(:close).lines.head // "";
+if 0 or $debug {
+    say "out: '$out'";
+    say "err: '$err'";
+}
+else {
+    is $out, "";
+    like $err, /:i fatal  /;
+}
+
+done-testing;
+=finish
 
 #===================================
 # Test 2
@@ -62,7 +81,7 @@ else {
 # err: 
 #===================================
 ++$test; say "Test $test" if $debug;
-$proc = run "bin/compress-pdf", "dpi=150", "t/data/calendar.pdf", :out, :err;
+$proc = run "bin/compress", "dpi=150", "t/data/calendar.pdf", :out, :err;
 $out = $proc.out.slurp(:close).lines.head // "";
 $err = $proc.err.slurp(:close).lines.head // "";
 if $debug {
@@ -80,7 +99,7 @@ else {
 # err: 
 #===================================
 ++$test; say "Test $test" if $debug;
-$proc = run "bin/compress-pdf", "dpi=300", "t/data/calendar.pdf", :out, :err;
+$proc = run "bin/compress", "dpi=300", "t/data/calendar.pdf", :out, :err;
 $out = $proc.out.slurp(:close).lines.head // "";
 $err = $proc.err.slurp(:close).lines.head // "";
 if $debug {

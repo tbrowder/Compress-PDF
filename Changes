@@ -1,6 +1,15 @@
 Revision history for Compress::PDF
 
 {{$NEXT}}
+    - Added new alias 'compress' with an environment variable,
+      'COMPRESS_PDF_COMPRESS_OFF', to disable it
+    - Increased version number to 0.5.0
+
+    - Changed the default DPI to 300 (from the original 150)
+      + note Ghostscript docs describe setting dpi options
+        150 dpi as 'ebook' and 300 dpi as 'print'
+    - Updated README with new or changed features
+    - Added new tests
 
 0.0.4  2024-02-15T20:14:56-06:00
     - Correct test t/5*t so no version controlled 

@@ -6,7 +6,7 @@ use File::Temp;
 sub compress(
     $inpdf is copy,
     :$outpdf is copy, 
-    :$dpi = 150, 
+    :$dpi = 300, 
     :$force,
     :$quiet,
     :$debug, 
@@ -16,16 +16,22 @@ sub compress(
     # Test for valid PDF inputs
     my $res = isa-pdf-file $inpdf;
     unless $res.so {
-        die "FATAL: Input file '$inpdf' is NOT a PDF file.";
+        # die "FATAL: Input file '$inpdf' is NOT a PDF file.";
+        warn qq:to/HERE/;
+        FATAL: Input file '$inpdf' is NOT a PDF file.
+               Exiting...
+        HERE
+        exit(1);
     }
     if $outpdf.defined {
         # It's a desired name. Warn if overwriting,
         if $outpdf.IO.e {
             if not $force.defined {
-                die qq:to/HERE/;
+                warn qq:to/HERE/;
                 FATAL: Output file '$outpdf' exists.
                        Use the 'force' option to overwrite.
                 HERE
+                exit(1);
             }
             else {
                 # Ok to use the output file name
@@ -59,12 +65,41 @@ sub compress(
     $outpdf
 }
 
-multi sub run-compress(@args) is export {
+sub check-exe-compress-env(:$debug) { # not exported
+    note "DEBUG: eureka, found compress" if $debug;
+    my $res = %*ENV<COMPRESS_PDF_COMPRESS_OFF>;
+    if $res.defined and $res == 1 {
+        note "  res = '$res' (will NOT run, say why)" if $debug;
+        # fix die 
+        warn qq:to/HERE/;
+        FATAL: Unable to use binary file 'compress' because of an
+               environment variable setting:
+
+                   COMPRESS-PDF-COMPRESS-OFF=1
+
+               Exiting...
+        HERE
+        exit(1);
+    }
+    else {
+        note "  res = '$res' (will run)" if $debug;
+    }
+    note "DEBUG: early exit..." if $debug;
+    exit if $debug;
+}
+
+multi sub run-compress(@args, :$debug) is export {
+    # check if $*PROGRAM file is 'compress', if so
+    #   check the env var for its value for NOT using it
+    if $*PROGRAM.basename eq 'compress' {
+        check-exe-compress-env # gives msg and exits with msg
+    }
+
     my $ifil;
     my $ofil;
     my $outpdf;
     my $force;
-    my $dpi = 150; # default
+    my $dpi = 300; # default
 
     for @args -> $a {
         if not $ifil.defined and $a.IO.f {
@@ -73,7 +108,12 @@ multi sub run-compress(@args) is export {
         elsif $a ~~ /:i [d|dp|dpi] '=' (\d\d\d) / {
             $dpi = ~$0;
             unless $dpi eq '150' or $dpi eq '300' {
-                die "FATAL: dpi values must be 150 or 300, you entered '$dpi'";
+                # die "FATAL: dpi values must be 150 or 300, you entered '$dpi'";
+                warn qq:to/HERE/;
+                FATAL: dpi values must be 150 or 300, you entered '$dpi'.
+                       Exiting...
+                HERE
+                exit(1);
             }
         }
         elsif $a ~~ /:i force / {
@@ -83,13 +123,23 @@ multi sub run-compress(@args) is export {
             $outpdf = ~$0;
         }
         else {
-            die "FATAL: Unknown arg '$a' (not a valid file)";
+            # die "FATAL: Unknown arg '$a' (not a valid file)";
+            warn qq:to/HERE/;
+            FATAL: Unknown arg '$a' (not a valid PDF file).
+                   Exiting...
+            HERE
+            exit(1);
         }
     }
     
     # We should have all input to proceed
     unless $ifil.defined {
-        die "FATAL: No input file was entered. Exiting.";
+        # die "FATAL: No input file was entered. Exiting.";
+        warn qq:to/HERE/;
+        FATAL: No input file was entered. 
+               Exiting...
+        HERE
+        exit(1);
     }
 
     $ofil = compress $ifil, :$outpdf, :$force, :$dpi;
@@ -110,16 +160,21 @@ multi sub run-compress(@args) is export {
 
 sub isa-pdf-file($ifil, :$debug --> Bool) is export {
     unless $ifil.IO.f {
-        die "FATAL: File '$ifil' not found.";
+        # die "FATAL: File '$ifil' not found.";
+        warn qq:to/HERE/;
+        FATAL: File '$ifil' not found.
+               Exiting...
+        HERE
     }
-    # Run the system 'file' command 
-    # Typical output with no options:
-    #   calendar-150dpi.pdf: PDF document, version 1.4
+    # Run the system 'file' command to check expected output
     #
-    # Note the output starts with a repeat of the input file name:
+    # Note the output starts with a repeat of the input file path
     #   t/data/FAKE.pdf: OS/2 REXX batch file, ASCII text
-    # so we suppress it with the '-b' (brief) option
-
+    # so we suppress it with the '-b' (brief) option which yields
+    #   OS/2 REXX batch file, ASCII text
+    #
+    # So for our tests with the '-b' for a successful run we expect:
+    #   PDF document, version 1.4
     my $proc = run "file", "-b", "--", $ifil, :out, :err;
     my $out = $proc.out.slurp(:close).lines.join(" ");
     note "DEBUG: out: $out" if $debug;
@@ -163,24 +218,35 @@ sub pretty-print($s) {
             $res = sprintf '%.1fT', $res;
         }
         default {
-            die "FATAL: Unable to handle file size of $s bits (> Exabyte)";
+            # die "FATAL: Unable to handle file size of $s bits (> Exabyte)";
+            warn qq:to/HERE/;
+            FATAL: Unable to handle file size of $s bits (> Exabyte).
+                   Exiting...
+            HERE
+            exit(1);
         }
     }
     $res
 }
 
-multi sub run-compress() is export {
+multi sub run-compress(:$debug) is export {
+    # check if $*PROGRAM file is 'compress', if so
+    #   check the env var for its value for NOT using it
+    if $*PROGRAM.basename eq 'compress' {
+        check-exe-compress-env # gives msg and exits with msg
+    }
+
     # show the no-args help stuff
     print qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <pdf file> [..options...]
 
     Without options, compresses the input PDF file to the
-      default 150 dpi.
+      default 300 dpi.
 
     The input file is not modified, and the output file is
       named as the input file with any extension or suffix
       replaced by '-NNNdpi.pdf' where 'NNN' is the selected
-      value of '150' (the default) or '300'.
+      value of '150' or '300' (the default).
 
     Options:
       dpi=X    - where X is the PDF compression level: '150' or '300' DPI

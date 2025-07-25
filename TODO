@@ -1,0 +1,7 @@
+=done
+
+
+Install another binary: 'compress'
+which does not exist on debian.
+Test the env var COMPRESS_PDF_COMPRESS_OFF
+TURNS it off on Debian.

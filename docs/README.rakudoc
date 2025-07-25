@@ -3,7 +3,7 @@
 =head1 NAME
 
 B<Compress::PDF> - Provides PDF compression binary executables
-C<compress-pdf> and its alias C<pdf-compress>
+C<compress-pdf> (and its aliases)
 
 =head1 SYNOPSIS
 
@@ -18,7 +18,7 @@ $ compress-pdf calendar.pdf
 # OUTPUT
 Input file: calendar.pdf
   Size: 2.9M
-Compressed output file: calendar-150dpi.pdf
+Compressed output file: calendar-300dpi.pdf
   Size: 247.7K
 =end code
 
@@ -29,28 +29,29 @@ Debian systems it can be installed by executing C<sudo aptitude
 install ps2pdf>.
 
 Installing this module results in an exported subroutine 
-as well as one primary and one aliased
+as well as one primary and two aliased
 Raku PDF compression programs:
 
-=item sub compress($inpdf, :$quiet, :$dpi = 150,
+=item sub compress($inpdf, :$quiet, :$dpi = 300,
                   :$outpdf, :$force) is export {...}
 =item compress-pdf
 =item pdf-compress #= aliased to C<compress-pdf>
+=item compress     #= aliased to C<compress-pdf>
 
 =head2 Programs
 
-Executing either program name without input arguments results in:
+Executing either of the three program names without input arguments results in:
 
 =begin code
 Usage: compress-pdf <pdf file> [..options...]
 
 Without options, the program compresses the input PDF file to the
-  default 150 dpi.
+  default 300 dpi.
 
 The input file is not modified, and the output file is
   named as the input file with any extension or suffix
   replaced by '-NNNdpi.pdf' where 'NNN' is the selected
-  value of '150' (the default) or '300'.
+  value of '150' or '300' (the default).
 
 Options:
   dpi=X    - where X is the PDF compression level: '150' or '300' DPI.
@@ -61,12 +62,20 @@ Options:
 Note the the default output file will overwrite an existing file of the 
 same name without warning.
 
+=head2 Environment variable COMPRESS_PDF_COMPRESS_OFF
+
+On Debian systems the alias name 'compress' should cause no conflicts
+with another packaged binary file. However, if any user finds alias
+'compress' causes problems, it can be turned off by setting
+environment variable C<COMPRESS_PDF_COMPRESS_OFF=1>.
+File an issue if that doesn't work for your system.
+
 =head2 Subroutine
 
 The subroutine has the following signature:
 
 =begin code
-sub compress($inpdf, :$quiet, :$dpi = 150,
+sub compress($inpdf, :$quiet, :$dpi = 300,
              :$outpdf, :$force) is export {...}
 =end code
 
@@ -86,7 +95,7 @@ Tom Browder <tbrowder@acm.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-© 2024 Tom Browder
+© 2024-2025 Tom Browder
 
 This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 

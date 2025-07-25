@@ -1,0 +1,11 @@
+#!/usr/bin/env raku
+
+use Compress::PDF;
+
+if @*ARGS.elems {
+    run-compress @*ARGS;
+}
+else {
+    run-compress;
+}
+

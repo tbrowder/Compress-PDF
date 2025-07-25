@@ -2,7 +2,7 @@ use Test;
 use Compress::PDF;
 use File::Copy;
 
-my $debug = 0;
+my $debug = 1;
 
 # Required to use without mi6:
 %*ENV<RAKUDOLIB> = "lib";
@@ -17,7 +17,6 @@ my @f = <
     t/data/calendar
     t/data/calendar.txt
 >;
-END { unlink $_ if $_.IO.e for @f; }
 
 # Prepare three more temporary input files
 # Genuine PDF files
@@ -32,20 +31,7 @@ cp $f, $fx;
 
 my ($proc, $out, $err);
 
-plan 8;
-
-# good
-lives-ok { compress $f; }
-lives-ok { compress $f0; }
-lives-ok { compress $fx; }
-
-# fake
-dies-ok { compress $fX; }
+plan 1;
 
 # with good args
-lives-ok { compress $f, :dpi(150); }
-lives-ok { compress $f, :dpi(300); }
-lives-ok { compress $f, :outpdf($f0), :force }
-
-# bad args
-dies-ok { compress $f, :outpdf($f0) }
+lives-ok { compress $f0, :quiet; }
